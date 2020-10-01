@@ -1,0 +1,40 @@
+#!/bin/bash
+
+function main(){
+    check_depend
+
+    URL="$(pbpaste)"
+
+
+    echo "Starting URL $URL"
+
+    tinyURL="$(curl -s "http://tinyurl.com/create.php?url=$URL"|grep "copyinfo"|cut -d\" -f 4)"
+
+    if [ "$tinyURL" = "" ];then echo "Error getting URL";exit 1;fi
+
+    echo "$tinyURL"|pbcopy
+
+    echo "URL in  Clipboard: $tinyURL"
+
+    echo "$tinyURL"|qrencode -t UTF8
+
+    osascript -e "display notification \"Shortened!\" with title \"${tinyURL//\"/\\\"}\""
+
+}
+
+function check_depend(){
+    deps=("/usr/local/bin/qrencode")
+    packages=(qrencode)
+
+    for i in "${deps[@]}"
+    do
+        if [ ! -f "$i" ];
+        then
+            echo "Attempting to install dependencies..."
+            echo "Needed dependencies: ${packages[@]}"
+            brew install %{packages[@]} && break || (echo "Install of dependencies failed";exit 1)
+        fi
+    done
+}
+
+main
