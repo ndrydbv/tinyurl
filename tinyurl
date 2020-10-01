@@ -14,7 +14,7 @@ function main(){
 
     echo "$tinyURL"|pbcopy
 
-    echo "URL in  Clipboard: $tinyURL"
+    echo "URL in Clipboard: $tinyURL"
 
     echo "$tinyURL"|qrencode -t UTF8
 
